@@ -10,6 +10,8 @@ docker compose up -d
 
 O Compose constrói a imagem da aplicação na primeira execução. A aplicação fica disponível em <http://localhost:8080>; o Mailpit, em <http://localhost:8025>. O PostgreSQL usa a porta `5432` e mantém os dados no volume `database_data`.
 
+Os diretórios `assets/` e `templates/` e o arquivo `importmap.php` são montados no contêiner. Alterações no front-end aparecem sem reconstruir a imagem; recarregue a página no navegador. Alterações no código PHP ainda exigem reconstruir a imagem.
+
 Se a porta `8080` já estiver ocupada, defina outra porta na execução, por exemplo `APP_PORT=8081 docker compose up -d`.
 
 Na primeira execução, aplique as migrations do banco:
@@ -22,7 +24,9 @@ A página inicial (`/`) lista os livros cadastrados e oferece busca por título,
 
 Nos formulários de livros, autores e assuntos são informados como badges separados por ponto e vírgula. Itens novos são cadastrados automaticamente ao salvar; remover um badge desfaz apenas a associação com aquele livro.
 
-Para reconstruir a imagem depois de alterar o código ou as dependências:
+As páginas da aplicação reutilizam `templates/layout/site.html.twig` para a estrutura comum e componentes em `templates/components/` para elementos compartilhados. Ao criar telas ou campos repetidos, prefira estender esse layout e parametrizar um componente Twig existente antes de duplicar sua marcação.
+
+Para reconstruir a imagem depois de alterar o código PHP ou as dependências:
 
 ```sh
 docker compose up -d --build

@@ -1,0 +1,23 @@
+<header class="site-header">
+    <a class="brand" href="{{ path('app_home') }}"{% if isHome %} aria-label="Acervo Aberto — início"{% endif %}>
+        <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4.75 6.5h5.1A2.65 2.65 0 0 1 12.5 9.15v9.1a2.65 2.65 0 0 0-2.65-2.65h-5.1V6.5Zm14.5 0h-5.1a2.65 2.65 0 0 0-2.65 2.65v9.1a2.65 2.65 0 0 1 2.65-2.65h5.1V6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <span>Acervo Aberto</span>
+    </a>
+
+    <nav class="header-actions" aria-label="Navegação principal">
+        {% if isHome %}
+            <a class="nav-link" href="#catalogo">Catálogo</a>
+        {% endif %}
+        <a class="nav-link" href="{{ path('autor_index') }}">Autores</a>
+        <a class="nav-link" href="{{ path('assunto_index') }}">Assuntos</a>
+        {% if not isHome %}
+            <a class="nav-link" href="{{ path('app_home') }}">Catálogo</a>
+        {% else %}
+            <a class="btn btn-success btn-sm" href="{{ path('livro_new') }}">Novo livro</a>
+        {% endif %}
+    </nav>
+</header>

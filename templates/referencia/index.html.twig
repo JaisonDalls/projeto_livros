@@ -1,25 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/site.html.twig' %}
 
 {% block title %}{{ pageTitle }} — Acervo Aberto{% endblock %}
 
-{% block body %}
-    <div class="site-shell">
-        <header class="site-header">
-            <a class="brand" href="{{ path('app_home') }}">
-                <span class="brand-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M4.75 6.5h5.1A2.65 2.65 0 0 1 12.5 9.15v9.1a2.65 2.65 0 0 0-2.65-2.65h-5.1V6.5Zm14.5 0h-5.1a2.65 2.65 0 0 0-2.65 2.65v9.1a2.65 2.65 0 0 1 2.65-2.65h5.1V6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span>Acervo Aberto</span>
-            </a>
-            <nav class="header-actions" aria-label="Navegação principal">
-                <a class="nav-link" href="{{ path('autor_index') }}">Autores</a>
-                <a class="nav-link" href="{{ path('assunto_index') }}">Assuntos</a>
-                <a class="nav-link" href="{{ path('app_home') }}">Catálogo</a>
-            </nav>
-        </header>
-
+{% block content %}
         <main class="catalog-section">
             <div class="section-heading">
                 <div>
@@ -29,10 +12,24 @@
                 <a class="btn btn-success" href="{{ path(newRoute) }}">Cadastrar</a>
             </div>
 
-            <div class="reference-list">
+            {% if items is not empty %}
+                <div class="reference-search">
+                    <label class="visually-hidden" for="reference-search">Pesquisar {{ pageTitle|lower }}</label>
+                    <input
+                        id="reference-search"
+                        type="search"
+                        placeholder="Pesquisar {{ pageTitle|lower }}..."
+                        autocomplete="off"
+                        data-reference-search
+                        aria-controls="reference-list"
+                    >
+                </div>
+            {% endif %}
+
+            <div class="reference-list" id="reference-list">
                 {% for item in items %}
-                    <div class="reference-row">
-                        <span>{{ item.label }}</span>
+                    <div class="reference-row" data-reference-item>
+                        <span data-reference-label>{{ item.label }}</span>
                         <div class="book-actions">
                             <a class="btn btn-sm btn-outline-secondary" href="{{ path(editRoute, {id: item.id}) }}">Editar</a>
                             <form method="post" action="{{ path(deleteRoute, {id: item.id}) }}" onsubmit="return confirm('Excluir este cadastro?');">
@@ -44,11 +41,10 @@
                 {% else %}
                     <p class="empty-state">Nenhum cadastro encontrado.</p>
                 {% endfor %}
+                {% if items is not empty %}
+                    <p class="empty-state" data-reference-empty role="status" aria-live="polite" hidden>Nenhum resultado para a pesquisa.</p>
+                {% endif %}
             </div>
         </main>
 
-        <footer class="site-footer">
-            <p>Acervo Aberto · Consulte e organize suas leituras.</p>
-        </footer>
-    </div>
 {% endblock %}

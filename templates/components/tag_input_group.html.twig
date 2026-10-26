@@ -1,0 +1,13 @@
+<fieldset class="tag-group">
+    <legend>{{ legend }}</legend>
+    <div class="tag-input-field">
+        {{ form_widget(field) }}
+        <div data-tag-options hidden>
+            {% for option in options %}
+                <span data-tag-option>{{ option }}</span>
+            {% endfor %}
+        </div>
+        {{ form_errors(field) }}
+    </div>
+    <small>{{ help }}</small>
+</fieldset>

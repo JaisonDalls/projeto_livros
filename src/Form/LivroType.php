@@ -58,12 +58,19 @@ final class LivroType extends AbstractType
             ])
             ->add('valor', TextType::class, [
                 'label' => 'Valor (R$)',
-                'attr' => ['inputmode' => 'decimal', 'placeholder' => '0,00'],
+                'attr' => [
+                    'data-currency-input' => 'true',
+                    'inputmode' => 'numeric',
+                    'maxlength' => 12,
+                    'pattern' => '(?:\\d{1,8}|\\d{1,2}(?:\\.\\d{3}){1,2}|\\d{1,3}\\.\\d{3}),\\d{2}',
+                    'placeholder' => '0,00',
+                    'autocomplete' => 'off',
+                ],
                 'constraints' => [
                     new NotBlank(),
                     new Regex(
-                        pattern: '/^\d{1,8}(?:[,.]\d{1,2})?$/',
-                        message: 'Informe um valor válido, com até duas casas decimais.'
+                        pattern: '/^\d{1,8}(?:\.\d{1,2})?$/',
+                        message: 'Informe um valor válido no formato brasileiro, com até duas casas decimais.'
                     ),
                 ],
             ])
@@ -76,6 +83,7 @@ final class LivroType extends AbstractType
                     'data-tag-input' => 'true',
                     'maxlength' => 1000,
                     'autocomplete' => 'off',
+                    'aria-label' => 'Autores',
                     'placeholder' => 'Digite um autor e pressione ; ou Enter',
                 ],
                 'constraints' => [
@@ -92,6 +100,7 @@ final class LivroType extends AbstractType
                     'data-tag-input' => 'true',
                     'maxlength' => 1000,
                     'autocomplete' => 'off',
+                    'aria-label' => 'Assuntos',
                     'placeholder' => 'Digite um assunto e pressione ; ou Enter',
                 ],
                 'constraints' => [
@@ -104,7 +113,13 @@ final class LivroType extends AbstractType
             $value = $event->getData();
 
             if (is_string($value)) {
-                $event->setData(str_replace(',', '.', trim($value)));
+                $value = trim($value);
+
+                if (preg_match('/^(?:\d{1,8}|\d{1,2}(?:\.\d{3}){1,2}|\d{1,3}\.\d{3}),\d{2}$/', $value) === 1) {
+                    $value = str_replace(',', '.', str_replace('.', '', $value));
+                }
+
+                $event->setData($value);
             }
         });
     }

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="site-shell">
+        {% block site_header %}
+            {% include 'components/site_header.html.twig' with {isHome: false} only %}
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+
+        {% include 'components/site_footer.html.twig' %}
+    </div>
+{% endblock %}

@@ -3,6 +3,10 @@ services:
   app:
     build:
       context: .
+    volumes:
+      - ./assets:/var/www/html/assets:ro
+      - ./templates:/var/www/html/templates:ro
+      - ./importmap.php:/var/www/html/importmap.php:ro
     ports:
       - "${APP_PORT:-8080}:80"
     environment:

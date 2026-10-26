@@ -47,6 +47,14 @@ final class LivroController extends AbstractController
             'form' => $form,
             'pageTitle' => 'Cadastrar livro',
             'submitLabel' => 'Cadastrar livro',
+            'autoresDisponiveis' => array_map(
+                static fn (Autor $autor): string => $autor->getNome(),
+                $autorRepository->findBy([], ['nome' => 'ASC'])
+            ),
+            'assuntosDisponiveis' => array_map(
+                static fn (Assunto $assunto): string => $assunto->getDescricao(),
+                $assuntoRepository->findBy([], ['descricao' => 'ASC'])
+            ),
         ]);
     }
 
@@ -82,6 +90,14 @@ final class LivroController extends AbstractController
             'form' => $form,
             'pageTitle' => 'Editar livro',
             'submitLabel' => 'Salvar alterações',
+            'autoresDisponiveis' => array_map(
+                static fn (Autor $autor): string => $autor->getNome(),
+                $autorRepository->findBy([], ['nome' => 'ASC'])
+            ),
+            'assuntosDisponiveis' => array_map(
+                static fn (Assunto $assunto): string => $assunto->getDescricao(),
+                $assuntoRepository->findBy([], ['descricao' => 'ASC'])
+            ),
         ]);
     }
 

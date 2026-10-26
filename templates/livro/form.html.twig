@@ -1,25 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/site.html.twig' %}
 
 {% block title %}{{ pageTitle }} — Acervo Aberto{% endblock %}
 
-{% block body %}
-    <div class="site-shell">
-        <header class="site-header">
-            <a class="brand" href="{{ path('app_home') }}">
-                <span class="brand-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M4.75 6.5h5.1A2.65 2.65 0 0 1 12.5 9.15v9.1a2.65 2.65 0 0 0-2.65-2.65h-5.1V6.5Zm14.5 0h-5.1a2.65 2.65 0 0 0-2.65 2.65v9.1a2.65 2.65 0 0 1 2.65-2.65h5.1V6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span>Acervo Aberto</span>
-            </a>
-            <nav class="header-actions" aria-label="Navegação principal">
-                <a class="nav-link" href="{{ path('autor_index') }}">Autores</a>
-                <a class="nav-link" href="{{ path('assunto_index') }}">Assuntos</a>
-                <a class="nav-link" href="{{ path('app_home') }}">Voltar ao catálogo</a>
-            </nav>
-        </header>
-
+{% block content %}
         <main class="catalog-section">
             <div class="section-heading">
                 <div>
@@ -39,25 +22,19 @@
                     <div class="field">{{ form_row(form.valor) }}</div>
                 </div>
 
-                <fieldset class="tag-group">
-                    <legend>Autores</legend>
-                    <div class="tag-input-field">
-                        {{ form_label(form.autoresTexto) }}
-                        {{ form_widget(form.autoresTexto) }}
-                        {{ form_errors(form.autoresTexto) }}
-                    </div>
-                    <small>Separe os nomes por ponto e vírgula. Novos autores serão cadastrados ao salvar.</small>
-                </fieldset>
+                {% include 'components/tag_input_group.html.twig' with {
+                    legend: 'Autores',
+                    field: form.autoresTexto,
+                    options: autoresDisponiveis,
+                    help: 'Digite para buscar um autor existente ou informe um novo. Use ponto e vírgula ou Enter para adicionar; novos autores serão cadastrados ao salvar.'
+                } only %}
 
-                <fieldset class="tag-group">
-                    <legend>Assuntos</legend>
-                    <div class="tag-input-field">
-                        {{ form_label(form.assuntosTexto) }}
-                        {{ form_widget(form.assuntosTexto) }}
-                        {{ form_errors(form.assuntosTexto) }}
-                    </div>
-                    <small>Separe os assuntos por ponto e vírgula. Novos assuntos serão cadastrados ao salvar.</small>
-                </fieldset>
+                {% include 'components/tag_input_group.html.twig' with {
+                    legend: 'Assuntos',
+                    field: form.assuntosTexto,
+                    options: assuntosDisponiveis,
+                    help: 'Digite para buscar um assunto existente ou informe um novo. Use ponto e vírgula ou Enter para adicionar; novos assuntos serão cadastrados ao salvar.'
+                } only %}
 
                 <div class="form-actions">
                     <button class="btn btn-success" type="submit">{{ submitLabel }}</button>
@@ -66,8 +43,4 @@
             {{ form_end(form) }}
         </main>
 
-        <footer class="site-footer">
-            <p>Acervo Aberto · Consulte e organize suas leituras.</p>
-        </footer>
-    </div>
 {% endblock %}
