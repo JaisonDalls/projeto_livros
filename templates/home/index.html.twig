@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Acervo Aberto — seu catálogo de livros{% endblock %}
+
+{% block body %}
+    <div class="site-shell">
+        <header class="site-header">
+            <a class="brand" href="{{ path('app_home') }}" aria-label="Acervo Aberto — início">
+                <span class="brand-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4.75 6.5h5.1A2.65 2.65 0 0 1 12.5 9.15v9.1a2.65 2.65 0 0 0-2.65-2.65h-5.1V6.5Zm14.5 0h-5.1a2.65 2.65 0 0 0-2.65 2.65v9.1a2.65 2.65 0 0 1 2.65-2.65h5.1V6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span>Acervo Aberto</span>
+            </a>
+
+            <nav class="header-actions" aria-label="Navegação principal">
+                <a class="nav-link" href="#catalogo">Catálogo</a>
+                <a class="nav-link" href="{{ path('autor_index') }}">Autores</a>
+                <a class="nav-link" href="{{ path('assunto_index') }}">Assuntos</a>
+                <a class="btn btn-success btn-sm" href="{{ path('livro_new') }}">Novo livro</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero" aria-labelledby="hero-title">
+                <p class="eyebrow">Biblioteca · Gestão do acervo</p>
+                <h1 id="hero-title">Histórias bem cuidadas, sempre ao alcance.</h1>
+                <p class="hero-description">Consulte, cadastre e organize os livros do acervo em um só lugar.</p>
+            </section>
+
+            <section class="catalog-section" id="catalogo" aria-labelledby="catalog-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">Explore o acervo</p>
+                        <h2 id="catalog-title">Livros do acervo</h2>
+                    </div>
+                    <a class="btn btn-success" href="{{ path('livro_new') }}">+ Cadastrar livro</a>
+                </div>
+
+                <form class="filter-panel" role="search" method="get" action="{{ path('app_home') }}">
+                    <div class="field">
+                        <label for="book-search">Buscar no catálogo</label>
+                        <input id="book-search" name="q" type="search" value="{{ searchTerm }}" placeholder="Título, editora ou autor">
+                    </div>
+                    <div class="field">
+                        <label for="subject-filter">Assunto</label>
+                        <select id="subject-filter" name="assunto">
+                            <option value="">Todos os assuntos</option>
+                            {% for subject in subjects %}
+                                <option value="{{ subject.id }}" {{ selectedSubject == subject.id ? 'selected' : '' }}>{{ subject.descricao }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="sort-books">Ordenar por</label>
+                        <select id="sort-books" name="ordem">
+                            <option value="titulo_asc" {{ sortOrder == 'titulo_asc' ? 'selected' : '' }}>Título (A–Z)</option>
+                            <option value="titulo_desc" {{ sortOrder == 'titulo_desc' ? 'selected' : '' }}>Título (Z–A)</option>
+                            <option value="ano_asc" {{ sortOrder == 'ano_asc' ? 'selected' : '' }}>Ano (mais antigo)</option>
+                            <option value="ano_desc" {{ sortOrder == 'ano_desc' ? 'selected' : '' }}>Ano (mais recente)</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-success" type="submit">Buscar</button>
+                        <a class="reset-filters" href="{{ path('app_home') }}">Limpar filtros</a>
+                    </div>
+                </form>
+
+                <p class="results-count">{{ books|length }} livros encontrados</p>
+
+                <div class="book-grid">
+                    {% for book in books %}
+                        <article class="book-card">
+                            <div class="book-cover" aria-hidden="true">
+                                <span class="book-cover-mark">{{ book.titulo|first|upper }}</span>
+                            </div>
+                            <div class="book-content">
+                                <h3>{{ book.titulo }}</h3>
+                                <p class="book-author">
+                                    {% for author in book.autores %}
+                                        {{ not loop.first ? ', ' : '' }}{{ author.nome }}
+                                    {% else %}
+                                        Autor não informado
+                                    {% endfor %}
+                                </p>
+                                <p class="book-meta">
+                                    {% for subject in book.assuntos %}
+                                        {{ not loop.first ? ', ' : '' }}{{ subject.descricao }}
+                                    {% else %}
+                                        Assunto não informado
+                                    {% endfor %}
+                                    · {{ book.anoPublicacao }}
+                                </p>
+                                <div class="book-actions" aria-label="Ações para {{ book.titulo }}">
+                                    <a class="btn btn-sm btn-outline-success" href="{{ path('livro_show', {id: book.id}) }}">Ver detalhes</a>
+                                    <a class="btn btn-sm btn-outline-secondary" href="{{ path('livro_edit', {id: book.id}) }}">Editar</a>
+                                    <form method="post" action="{{ path('livro_delete', {id: book.id}) }}" onsubmit="return confirm('Excluir este livro?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    {% else %}
+                        <p class="empty-state">Nenhum livro encontrado. Cadastre o primeiro livro ou ajuste os filtros.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <p>Acervo Aberto · Consulte e organize suas leituras.</p>
+        </footer>
+    </div>
+{% endblock %}

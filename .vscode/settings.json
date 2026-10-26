@@ -1,0 +1,12 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^php bin/console lint:twig templates$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^php bin/console debug:router app_home$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

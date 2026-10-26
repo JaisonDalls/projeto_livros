@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ book.titulo }} — Acervo Aberto{% endblock %}
+
+{% block body %}
+    <div class="site-shell">
+        <header class="site-header">
+            <a class="brand" href="{{ path('app_home') }}">
+                <span class="brand-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4.75 6.5h5.1A2.65 2.65 0 0 1 12.5 9.15v9.1a2.65 2.65 0 0 0-2.65-2.65h-5.1V6.5Zm14.5 0h-5.1a2.65 2.65 0 0 0-2.65 2.65v9.1a2.65 2.65 0 0 1 2.65-2.65h5.1V6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span>Acervo Aberto</span>
+            </a>
+            <nav class="header-actions" aria-label="Navegação principal">
+                <a class="nav-link" href="{{ path('autor_index') }}">Autores</a>
+                <a class="nav-link" href="{{ path('assunto_index') }}">Assuntos</a>
+                <a class="nav-link" href="{{ path('app_home') }}">Voltar ao catálogo</a>
+            </nav>
+        </header>
+
+        <main class="catalog-section">
+            <p class="eyebrow">Detalhes do livro</p>
+            <h1 class="book-detail-title">{{ book.titulo }}</h1>
+            <dl class="book-details">
+                <div><dt>Editora</dt><dd>{{ book.editora }}</dd></div>
+                <div><dt>Edição</dt><dd>{{ book.edicao }}</dd></div>
+                <div><dt>Ano de publicação</dt><dd>{{ book.anoPublicacao }}</dd></div>
+                <div><dt>Valor</dt><dd>R$ {{ book.valor|number_format(2, ',', '.') }}</dd></div>
+                <div>
+                    <dt>Autores</dt>
+                    <dd>
+                        {% for author in book.autores %}
+                            {{ not loop.first ? ', ' : '' }}{{ author.nome }}
+                        {% else %}
+                            Não informado
+                        {% endfor %}
+                    </dd>
+                </div>
+                <div>
+                    <dt>Assuntos</dt>
+                    <dd>
+                        {% for subject in book.assuntos %}
+                            {{ not loop.first ? ', ' : '' }}{{ subject.descricao }}
+                        {% else %}
+                            Não informado
+                        {% endfor %}
+                    </dd>
+                </div>
+            </dl>
+            <div class="form-actions">
+                <a class="btn btn-success" href="{{ path('livro_edit', {id: book.id}) }}">Editar livro</a>
+                <a class="btn btn-outline-secondary" href="{{ path('app_home') }}">Voltar ao catálogo</a>
+                <form method="post" action="{{ path('livro_delete', {id: book.id}) }}" onsubmit="return confirm('Excluir este livro?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                    <button class="btn btn-outline-danger" type="submit">Excluir livro</button>
+                </form>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <p>Acervo Aberto · Consulte e organize suas leituras.</p>
+        </footer>
+    </div>
+{% endblock %}

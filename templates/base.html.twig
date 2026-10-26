@@ -2,9 +2,12 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#f1f4f1">
+        <title>{% block title %}Acervo Aberto{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect width=%2240%22 height=%2240%22 rx=%2212%22 fill=%22%23e1ebe3%22/><path d=%22M10 12h8c2 0 4 2 4 4v14c0-2-2-4-4-4h-8zm20 0h-8c-2 0-4 2-4 4v14c0-2 2-4 4-4h8z%22 fill=%22none%22 stroke=%22%23366b5d%22 stroke-width=%222%22 stroke-linejoin=%22round%22/></svg>">
         {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
 
@@ -20,6 +23,20 @@
         {% endif %}
     </head>
     <body>
+        {% set flashMessages = app.flashes %}
+        {% if flashMessages is not empty %}
+            <div class="notification-stack" aria-label="Notificações">
+                {% for type, messages in flashMessages %}
+                    {% for message in messages %}
+                        <div class="flash-message" data-notification role="{{ type == 'success' ? 'status' : 'alert' }}" aria-live="{{ type == 'success' ? 'polite' : 'assertive' }}">
+                            <span>{{ message }}</span>
+                            <button class="btn-close notification-close" type="button" aria-label="Fechar notificação"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block body %}{% endblock %}
     </body>
 </html>
